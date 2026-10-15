@@ -43,7 +43,7 @@ plugins {
 
     alias(libs.plugins.kotlin.serialization) apply false
 
-    alias(libs.plugins.ksp) apply false
+//    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.de.ktorfit) apply false
 }
 
@@ -61,6 +61,35 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: 'maven-publish'
+
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin('com.android.library')) {
+            android {
+                publishing {
+                    singleVariant("release")
+                }
+            }
+        }
+    }
+
+    tasks.matching { it.name.startsWith("publish") }.configureEach {
+        doLast {
+            def userHome = System.getProperty("user.home")
+            def mavenLocalDir = new File(userHome, ".m2/repository/com/github/cybernhl/GeneralModule")
+            if (mavenLocalDir.exists()) {
+                mavenLocalDir.eachFileRecurse { file ->
+                    if (file.isFile() && file.name.endsWith("-metadata.jar")) {
+                        def targetFile = new File(file.parentFile, file.name.replace("-metadata.jar", ".jar"))
+                        if (!targetFile.exists()) {
+                            targetFile.bytes = file.bytes
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     configurations.all {
         resolutionStrategy.eachDependency {
             if (requested.group == "org.jetbrains.kotlin") {

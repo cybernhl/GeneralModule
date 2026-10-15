@@ -1,3 +1,4 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -55,27 +56,27 @@ val currentJdk = if (versionComponents[0] == 1) versionComponents[1] else versio
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositories {
-        mavenCentral()
         google()
-        maven {
-            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-            name = "SonatypeSnapshots"
-            mavenContent {
-                snapshotsOnly()
-            }
-        }
+        mavenCentral()
         maven(url = "https://jitpack.io")
-        maven(url = "https://s3.amazonaws.com/repo.commonsware.com")
-        maven(url = "https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven(url = "https://api.xposed.info/")
-        maven(url = "https://jogamp.org/deployment/maven")
-        maven(url = "https://raw.githubusercontent.com/cybernhl/maven-repository/master/")
-        maven(url = "https://maven.aliyun.com/repository/jcenter")
-        maven(url = "https://maven.aliyun.com/repository/public/")
-        maven(url = "https://maven.aliyun.com/repository/spring/")
-        maven(url = "https://maven.aliyun.com/repository/google/")
-        maven(url = "https://packages.jetbrains.team/maven/p/skija/maven")
     }
 }
 
 rootProject.name = "GeneralModule"
+include(":DI_TAGS")
+include(":utils")
+include(":storage")
+
+include(":network_plugin")
+project(":network_plugin").projectDir = file("./network_plugin")
+
+include(":network")
+project(":network").projectDir = file("./network")
+
+include(":resfulclient")
+project(":resfulclient").projectDir = file("./resfulclient")
+
+include(":DomainManager")
+project(":DomainManager").projectDir = file("./DomainManager")
+include(":DomainProbe")
+project(":DomainProbe").projectDir = file("./DomainProbe")
